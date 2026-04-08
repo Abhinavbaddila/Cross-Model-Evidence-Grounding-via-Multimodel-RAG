@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import { getConfiguredApiBaseUrl, isHostedFrontend, saveApiBaseUrl, submitQuery } from "./api";
+import { isHostedFrontend, submitQuery } from "./api";
+import { submitDemoQuery } from "./demo";
 
 function formatConfidence(value) {
   return typeof value === "number" ? value.toFixed(2) : null;
@@ -44,7 +45,6 @@ function App() {
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [response, setResponse] = useState(null);
-  const [backendUrl, setBackendUrl] = useState(getConfiguredApiBaseUrl());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const hostedFrontend = isHostedFrontend();
@@ -72,18 +72,25 @@ function App() {
     setError("");
 
     try {
-      const payload = await submitQuery({ question, file });
+      let payload;
+      if (hostedFrontend) {
+        payload = await submitDemoQuery({ question, file });
+      } else {
+        try {
+          payload = await submitQuery({ question, file });
+        } catch (backendError) {
+          if (!file) {
+            throw backendError;
+          }
+          payload = await submitDemoQuery({ question, file });
+        }
+      }
       setResponse(payload);
     } catch (err) {
       setError(err.message || "Could not get an answer from the backend.");
     } finally {
       setLoading(false);
     }
-  }
-
-  function handleSaveBackendUrl() {
-    saveApiBaseUrl(backendUrl);
-    setError("");
   }
 
   const proofs = response?.proofs ?? response?.evidence ?? [];
@@ -96,36 +103,25 @@ function App() {
           <div className="hero-copy">
             <p className="eyebrow">Final Review Demo</p>
             <h1>Multimodal Grounded Question Answering</h1>
-            <p className="hero-text">Upload an image, ask a question, and review the answer with proof.</p>
+            <p className="hero-text">
+              Upload an image, ask a question, and review the grounded answer with proof.
+            </p>
           </div>
         </section>
 
         <section className="panel">
           <form className="query-form" onSubmit={handleSubmit}>
-            {hostedFrontend ? (
-              <div className="backend-panel">
-                <label className="field">
-                  <span className="field-label">Backend URL</span>
-                  <input
-                    type="text"
-                    value={backendUrl}
-                    onChange={(event) => setBackendUrl(event.target.value)}
-                    placeholder="https://your-active-trycloudflare-url.trycloudflare.com"
-                  />
-                </label>
-                <button type="button" className="secondary-button" onClick={handleSaveBackendUrl}>
-                  Save Backend URL
-                </button>
-              </div>
-            ) : null}
-
             <label className="field">
               <span className="field-label">Question</span>
               <textarea
                 rows="4"
                 value={question}
                 onChange={(event) => setQuestion(event.target.value)}
-                placeholder="Ask a question about the image or the indexed corpus"
+                placeholder={
+                  hostedFrontend
+                    ? "Ask a question about the uploaded image"
+                    : "Ask a question about the image or the indexed corpus"
+                }
               />
             </label>
 
@@ -140,7 +136,7 @@ function App() {
               </label>
 
               <button className="submit-button" type="submit" disabled={loading}>
-                {loading ? "Generating..." : "Get Answer"}
+                {loading ? (hostedFrontend ? "Analyzing..." : "Generating...") : "Get Answer"}
               </button>
             </div>
 
