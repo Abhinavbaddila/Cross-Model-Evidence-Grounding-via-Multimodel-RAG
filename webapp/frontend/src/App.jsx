@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import { submitQuery } from "./api";
+import { getConfiguredApiBaseUrl, isHostedFrontend, saveApiBaseUrl, submitQuery } from "./api";
 
 function formatConfidence(value) {
   return typeof value === "number" ? value.toFixed(2) : null;
@@ -44,8 +44,10 @@ function App() {
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [response, setResponse] = useState(null);
+  const [backendUrl, setBackendUrl] = useState(getConfiguredApiBaseUrl());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const hostedFrontend = isHostedFrontend();
 
   useEffect(() => {
     if (!file) {
@@ -79,6 +81,11 @@ function App() {
     }
   }
 
+  function handleSaveBackendUrl() {
+    saveApiBaseUrl(backendUrl);
+    setError("");
+  }
+
   const proofs = response?.proofs ?? response?.evidence ?? [];
   const confidence = formatConfidence(response?.confidence);
 
@@ -95,6 +102,23 @@ function App() {
 
         <section className="panel">
           <form className="query-form" onSubmit={handleSubmit}>
+            {hostedFrontend ? (
+              <div className="backend-panel">
+                <label className="field">
+                  <span className="field-label">Backend URL</span>
+                  <input
+                    type="text"
+                    value={backendUrl}
+                    onChange={(event) => setBackendUrl(event.target.value)}
+                    placeholder="https://your-active-trycloudflare-url.trycloudflare.com"
+                  />
+                </label>
+                <button type="button" className="secondary-button" onClick={handleSaveBackendUrl}>
+                  Save Backend URL
+                </button>
+              </div>
+            ) : null}
+
             <label className="field">
               <span className="field-label">Question</span>
               <textarea

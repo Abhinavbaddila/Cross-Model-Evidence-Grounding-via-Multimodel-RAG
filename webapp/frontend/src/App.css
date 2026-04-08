@@ -64,7 +64,8 @@
 .field,
 .preview-copy,
 .proof-body,
-.empty-card {
+.empty-card,
+.backend-panel {
   display: grid;
   gap: 12px;
 }
@@ -88,7 +89,23 @@ textarea {
   transition: border-color 120ms ease, box-shadow 120ms ease;
 }
 
+input[type="text"] {
+  width: 100%;
+  border: 1px solid #cfd8e1;
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: #fbfcfe;
+  color: #132433;
+  outline: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
 textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+input[type="text"]:focus {
   border-color: #2563eb;
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
@@ -115,6 +132,7 @@ textarea:focus {
 .upload-button,
 .submit-button,
 .remove-button,
+.secondary-button,
 .meta-chip,
 .proof-badge,
 .proof-score,
@@ -123,7 +141,8 @@ textarea:focus {
 }
 
 .upload-button,
-.remove-button {
+.remove-button,
+.secondary-button {
   position: relative;
   border: 1px solid #d3dce5;
   background: #f6f8fb;
@@ -147,7 +166,8 @@ textarea:focus {
 }
 
 .submit-button,
-.remove-button {
+.remove-button,
+.secondary-button {
   font: inherit;
   padding: 10px 16px;
   cursor: pointer;
@@ -158,6 +178,10 @@ textarea:focus {
   background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%);
   color: #ffffff;
   font-weight: 700;
+}
+
+.secondary-button {
+  justify-self: start;
 }
 
 .submit-button:disabled {

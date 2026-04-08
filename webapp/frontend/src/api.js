@@ -1,8 +1,41 @@
 const explicitBase = import.meta.env.VITE_API_BASE_URL?.trim();
+const STORAGE_KEY = "mmrag_api_base_url";
+
+function normalizeBaseUrl(value) {
+  return value?.trim().replace(/\/$/, "") || "";
+}
+
+function readStoredBase() {
+  if (typeof window === "undefined") {
+    return "";
+  }
+  return normalizeBaseUrl(window.localStorage.getItem(STORAGE_KEY) || "");
+}
+
+export function saveApiBaseUrl(value) {
+  if (typeof window === "undefined") {
+    return;
+  }
+  const normalized = normalizeBaseUrl(value);
+  if (normalized) {
+    window.localStorage.setItem(STORAGE_KEY, normalized);
+  } else {
+    window.localStorage.removeItem(STORAGE_KEY);
+  }
+}
+
+export function getConfiguredApiBaseUrl() {
+  return normalizeBaseUrl(explicitBase) || readStoredBase();
+}
+
+export function isHostedFrontend() {
+  return typeof window !== "undefined" && window.location.hostname.endsWith("github.io");
+}
 
 function candidateBases() {
-  if (explicitBase) {
-    return [explicitBase.replace(/\/$/, "")];
+  const configured = getConfiguredApiBaseUrl();
+  if (configured) {
+    return [configured];
   }
 
   const host = window.location.hostname;
@@ -46,9 +79,9 @@ async function request(path, options = {}) {
     }
   }
 
-  if (window.location.hostname.endsWith("github.io") && !explicitBase) {
+  if (window.location.hostname.endsWith("github.io") && !getConfiguredApiBaseUrl()) {
     throw new Error(
-      "This GitHub Pages site needs a public backend URL. Set VITE_API_BASE_URL during deployment so the frontend can reach the FastAPI API."
+      "Paste a public backend URL first. Use your active trycloudflare URL, then submit again."
     );
   }
 
