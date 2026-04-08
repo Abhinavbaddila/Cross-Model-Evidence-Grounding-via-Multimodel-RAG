@@ -1,0 +1,1232 @@
+[
+  {
+    "question": "What is the man doing?",
+    "answer": "---",
+    "grounded": {
+      "answer": "---",
+      "sources": [
+        {
+          "image_id": 71016,
+          "caption": "there is not an image here for me to see",
+          "image_path": "data/coco\\train2017\\000000071016.jpg",
+          "score": 0.5635511398315429
+        },
+        {
+          "image_id": 153466,
+          "caption": "Person doing an interesting activity in the picture\n",
+          "image_path": "data/coco\\train2017\\000000153466.jpg",
+          "score": 0.5617196559906006
+        },
+        {
+          "image_id": 576468,
+          "caption": "Person doing an interesting activity in the picture\n",
+          "image_path": "data/coco\\train2017\\000000576468.jpg",
+          "score": 0.5617196559906006
+        }
+      ]
+    },
+    "timestamp": "2026-01-14 21:44:00",
+    "vqa": 0.0,
+    "faith": 0.0
+  },
+  {
+    "question": "What is the man doing?",
+    "answer": "he is preparing the plane for flight",
+    "grounded": {
+      "answer": "he is preparing the plane for flight",
+      "sources": [
+        {
+          "image_id": 71016,
+          "caption": "there is not an image here for me to see",
+          "image_path": "data/coco\\train2017\\000000071016.jpg",
+          "score": 0.5635511398315429
+        },
+        {
+          "image_id": 153466,
+          "caption": "Person doing an interesting activity in the picture\n",
+          "image_path": "data/coco\\train2017\\000000153466.jpg",
+          "score": 0.5617196559906006
+        },
+        {
+          "image_id": 576468,
+          "caption": "Person doing an interesting activity in the picture\n",
+          "image_path": "data/coco\\train2017\\000000576468.jpg",
+          "score": 0.5617196559906006
+        }
+      ]
+    },
+    "timestamp": "2026-01-14 22:04:19",
+    "vqa": 0.0,
+    "faith": 0.5714285714285714
+  },
+  {
+    "question": "What is the man doing?",
+    "answer": "there is not an image here for me to see",
+    "grounded": {
+      "answer": "there is not an image here for me to see",
+      "sources": [
+        {
+          "caption": "there is not an image here for me to see",
+          "score": null,
+          "image_path": "data/coco\\train2017\\000000071016.jpg",
+          "image_id": 71016
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\000000153466.jpg",
+          "image_id": 153466
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\000000576468.jpg",
+          "image_id": 576468
+        }
+      ]
+    },
+    "timestamp": "2026-01-14 22:53:49",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What is the man doing?",
+    "answer": "there is not an image here for me to see",
+    "grounded": {
+      "answer": "there is not an image here for me to see",
+      "sources": [
+        {
+          "caption": "there is not an image here for me to see",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000071016.jpg",
+          "image_id": 71016
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000153466.jpg",
+          "image_id": 153466
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000576468.jpg",
+          "image_id": 576468
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 00:04:55",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What is the man doing?",
+    "answer": "there is not an image here for me to see",
+    "grounded": {
+      "answer": "there is not an image here for me to see",
+      "sources": [
+        {
+          "caption": "there is not an image here for me to see",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000071016.jpg",
+          "image_id": 71016
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000153466.jpg",
+          "image_id": 153466
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000576468.jpg",
+          "image_id": 576468
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 12:24:41",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What is the man doing?",
+    "answer": "there is not an image here for me to see",
+    "grounded": {
+      "answer": "there is not an image here for me to see",
+      "sources": [
+        {
+          "caption": "there is not an image here for me to see",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000071016.jpg",
+          "image_id": 71016
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000153466.jpg",
+          "image_id": 153466
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000576468.jpg",
+          "image_id": 576468
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 12:27:48",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What is the man doing?",
+    "answer": "there is not an image here for me to see",
+    "grounded": {
+      "answer": "there is not an image here for me to see",
+      "sources": [
+        {
+          "caption": "there is not an image here for me to see",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000071016.jpg",
+          "image_id": 71016
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000153466.jpg",
+          "image_id": 153466
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000576468.jpg",
+          "image_id": 576468
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 15:21:00",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What is the woman holding?",
+    "answer": "the woman is holding her head down and has her hands on it",
+    "grounded": {
+      "answer": "the woman is holding her head down and has her hands on it",
+      "sources": [
+        {
+          "caption": "There is a woman holding an object in her hand.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000137377.jpg",
+          "image_id": 137377
+        },
+        {
+          "caption": "There is a woman holding an object in her hand.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000047667.jpg",
+          "image_id": 47667
+        },
+        {
+          "caption": "The woman is holding her head down and has her hands on it ",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000299544.jpg",
+          "image_id": 299544
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 15:22:07",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What vehicle is present?",
+    "answer": "The truck is driving down the road.",
+    "grounded": {
+      "answer": "The truck is driving down the road.",
+      "sources": [
+        {
+          "caption": "A car that is slightly driven off the road.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000091670.jpg",
+          "image_id": 91670
+        },
+        {
+          "caption": "This is the most weird looking vehicle that I have ever seen.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000161019.jpg",
+          "image_id": 161019
+        },
+        {
+          "caption": "There is a truck carrying items on it.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000488686.jpg",
+          "image_id": 488686
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 15:22:53",
+    "vqa": 0.0,
+    "faith": 0.6666666666666666
+  },
+  {
+    "question": "What animal do you see?",
+    "answer": "no image",
+    "grounded": {
+      "answer": "no image",
+      "sources": [
+        {
+          "caption": "An uncommon picture of a single animal inside this picture.\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000492671.jpg",
+          "image_id": 492671
+        },
+        {
+          "caption": "there is not an image here for me to see",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000071016.jpg",
+          "image_id": 71016
+        },
+        {
+          "caption": "I cannot see this first image..nothing is showing.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000529155.jpg",
+          "image_id": 529155
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 15:23:41",
+    "vqa": 0.0,
+    "faith": 0.5
+  },
+  {
+    "question": "What is the man doing?",
+    "answer": "there is not an image here for me to see",
+    "grounded": {
+      "answer": "there is not an image here for me to see",
+      "sources": [
+        {
+          "caption": "there is not an image here for me to see",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000071016.jpg",
+          "image_id": 71016
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000153466.jpg",
+          "image_id": 153466
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000576468.jpg",
+          "image_id": 576468
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 15:30:22",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What animal is shown?",
+    "answer": "I cant tell what kind of animals these are",
+    "grounded": {
+      "answer": "I cant tell what kind of animals these are",
+      "sources": [
+        {
+          "caption": "THERE IS AN ANIMAL WITH ANIMAL PARTS SHOWING ",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000266030.jpg",
+          "image_id": 266030
+        },
+        {
+          "caption": "I cant tell what kind of animals these are",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000530941.jpg",
+          "image_id": 530941
+        },
+        {
+          "caption": "I am unable to see the image above.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000289967.jpg",
+          "image_id": 289967
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 15:31:12",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What vehicle is present?",
+    "answer": "The truck is driving down the road.",
+    "grounded": {
+      "answer": "The truck is driving down the road.",
+      "sources": [
+        {
+          "caption": "A car that is slightly driven off the road.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000091670.jpg",
+          "image_id": 91670
+        },
+        {
+          "caption": "This is the most weird looking vehicle that I have ever seen.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000161019.jpg",
+          "image_id": 161019
+        },
+        {
+          "caption": "There is a truck carrying items on it.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000488686.jpg",
+          "image_id": 488686
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 15:31:56",
+    "vqa": 0.0,
+    "faith": 0.6666666666666666
+  },
+  {
+    "question": "What is the man doing?",
+    "answer": "there is not an image here for me to see",
+    "grounded": {
+      "answer": "there is not an image here for me to see",
+      "sources": [
+        {
+          "caption": "there is not an image here for me to see",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000071016.jpg",
+          "image_id": 71016
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000153466.jpg",
+          "image_id": 153466
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000576468.jpg",
+          "image_id": 576468
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 15:32:46",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What animal is shown?",
+    "answer": "I cant tell what kind of animals these are",
+    "grounded": {
+      "answer": "I cant tell what kind of animals these are",
+      "sources": [
+        {
+          "caption": "THERE IS AN ANIMAL WITH ANIMAL PARTS SHOWING ",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000266030.jpg",
+          "image_id": 266030
+        },
+        {
+          "caption": "I cant tell what kind of animals these are",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000530941.jpg",
+          "image_id": 530941
+        },
+        {
+          "caption": "I am unable to see the image above.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000289967.jpg",
+          "image_id": 289967
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 15:33:34",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What vehicle is present?",
+    "answer": "The truck is driving down the road.",
+    "grounded": {
+      "answer": "The truck is driving down the road.",
+      "sources": [
+        {
+          "caption": "A car that is slightly driven off the road.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000091670.jpg",
+          "image_id": 91670
+        },
+        {
+          "caption": "This is the most weird looking vehicle that I have ever seen.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000161019.jpg",
+          "image_id": 161019
+        },
+        {
+          "caption": "There is a truck carrying items on it.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000488686.jpg",
+          "image_id": 488686
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 15:34:21",
+    "vqa": 0.0,
+    "faith": 0.6666666666666666
+  },
+  {
+    "question": "What is the man doing?",
+    "answer": "there is not an image here for me to see",
+    "grounded": {
+      "answer": "there is not an image here for me to see",
+      "sources": [
+        {
+          "caption": "there is not an image here for me to see",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000071016.jpg",
+          "image_id": 71016
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000153466.jpg",
+          "image_id": 153466
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000576468.jpg",
+          "image_id": 576468
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 15:35:11",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What animal is shown?",
+    "answer": "I cant tell what kind of animals these are",
+    "grounded": {
+      "answer": "I cant tell what kind of animals these are",
+      "sources": [
+        {
+          "caption": "THERE IS AN ANIMAL WITH ANIMAL PARTS SHOWING ",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000266030.jpg",
+          "image_id": 266030
+        },
+        {
+          "caption": "I cant tell what kind of animals these are",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000530941.jpg",
+          "image_id": 530941
+        },
+        {
+          "caption": "I am unable to see the image above.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000289967.jpg",
+          "image_id": 289967
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 15:35:58",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What vehicle is present?",
+    "answer": "The truck is driving down the road.",
+    "grounded": {
+      "answer": "The truck is driving down the road.",
+      "sources": [
+        {
+          "caption": "A car that is slightly driven off the road.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000091670.jpg",
+          "image_id": 91670
+        },
+        {
+          "caption": "This is the most weird looking vehicle that I have ever seen.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000161019.jpg",
+          "image_id": 161019
+        },
+        {
+          "caption": "There is a truck carrying items on it.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000488686.jpg",
+          "image_id": 488686
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 15:36:51",
+    "vqa": 0.0,
+    "faith": 0.6666666666666666
+  },
+  {
+    "question": "What is the man doing?",
+    "answer": "there is not an image here for me to see",
+    "grounded": {
+      "answer": "there is not an image here for me to see",
+      "sources": [
+        {
+          "caption": "there is not an image here for me to see",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000071016.jpg",
+          "image_id": 71016
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000153466.jpg",
+          "image_id": 153466
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000576468.jpg",
+          "image_id": 576468
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 15:53:34",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What is the woman holding?",
+    "answer": "the woman is holding her head down and has her hands on it",
+    "grounded": {
+      "answer": "the woman is holding her head down and has her hands on it",
+      "sources": [
+        {
+          "caption": "There is a woman holding an object in her hand.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000137377.jpg",
+          "image_id": 137377
+        },
+        {
+          "caption": "There is a woman holding an object in her hand.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000047667.jpg",
+          "image_id": 47667
+        },
+        {
+          "caption": "The woman is holding her head down and has her hands on it ",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000299544.jpg",
+          "image_id": 299544
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 15:54:38",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What vehicle is present?",
+    "answer": "The truck is driving down the road.",
+    "grounded": {
+      "answer": "The truck is driving down the road.",
+      "sources": [
+        {
+          "caption": "A car that is slightly driven off the road.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000091670.jpg",
+          "image_id": 91670
+        },
+        {
+          "caption": "This is the most weird looking vehicle that I have ever seen.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000161019.jpg",
+          "image_id": 161019
+        },
+        {
+          "caption": "There is a truck carrying items on it.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000488686.jpg",
+          "image_id": 488686
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 15:55:43",
+    "vqa": 0.0,
+    "faith": 0.6666666666666666
+  },
+  {
+    "question": "What animal do you see?",
+    "answer": "no image",
+    "grounded": {
+      "answer": "no image",
+      "sources": [
+        {
+          "caption": "An uncommon picture of a single animal inside this picture.\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000492671.jpg",
+          "image_id": 492671
+        },
+        {
+          "caption": "there is not an image here for me to see",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000071016.jpg",
+          "image_id": 71016
+        },
+        {
+          "caption": "I cannot see this first image..nothing is showing.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000529155.jpg",
+          "image_id": 529155
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 15:56:49",
+    "vqa": 0.0,
+    "faith": 0.5
+  },
+  {
+    "question": "What is the man doing?",
+    "answer": "there is not an image here for me to see",
+    "grounded": {
+      "answer": "there is not an image here for me to see",
+      "sources": [
+        {
+          "caption": "there is not an image here for me to see",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000071016.jpg",
+          "image_id": 71016
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000153466.jpg",
+          "image_id": 153466
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000576468.jpg",
+          "image_id": 576468
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 22:09:11",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What is the woman holding?",
+    "answer": "the woman is holding her head down and has her hands on it",
+    "grounded": {
+      "answer": "the woman is holding her head down and has her hands on it",
+      "sources": [
+        {
+          "caption": "There is a woman holding an object in her hand.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000137377.jpg",
+          "image_id": 137377
+        },
+        {
+          "caption": "There is a woman holding an object in her hand.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000047667.jpg",
+          "image_id": 47667
+        },
+        {
+          "caption": "The woman is holding her head down and has her hands on it ",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000299544.jpg",
+          "image_id": 299544
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 22:09:59",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What vehicle is present?",
+    "answer": "The truck is driving down the road.",
+    "grounded": {
+      "answer": "The truck is driving down the road.",
+      "sources": [
+        {
+          "caption": "A car that is slightly driven off the road.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000091670.jpg",
+          "image_id": 91670
+        },
+        {
+          "caption": "This is the most weird looking vehicle that I have ever seen.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000161019.jpg",
+          "image_id": 161019
+        },
+        {
+          "caption": "There is a truck carrying items on it.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000488686.jpg",
+          "image_id": 488686
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 22:10:48",
+    "vqa": 0.0,
+    "faith": 0.6666666666666666
+  },
+  {
+    "question": "What animal do you see?",
+    "answer": "no image",
+    "grounded": {
+      "answer": "no image",
+      "sources": [
+        {
+          "caption": "An uncommon picture of a single animal inside this picture.\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000492671.jpg",
+          "image_id": 492671
+        },
+        {
+          "caption": "there is not an image here for me to see",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000071016.jpg",
+          "image_id": 71016
+        },
+        {
+          "caption": "I cannot see this first image..nothing is showing.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000529155.jpg",
+          "image_id": 529155
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 22:11:42",
+    "vqa": 0.0,
+    "faith": 0.5
+  },
+  {
+    "question": "What is the man doing?",
+    "answer": "there is not an image here for me to see",
+    "grounded": {
+      "answer": "there is not an image here for me to see",
+      "sources": [
+        {
+          "caption": "there is not an image here for me to see",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000071016.jpg",
+          "image_id": 71016
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000153466.jpg",
+          "image_id": 153466
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000576468.jpg",
+          "image_id": 576468
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 22:13:30",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What animal is shown?",
+    "answer": "I cant tell what kind of animals these are",
+    "grounded": {
+      "answer": "I cant tell what kind of animals these are",
+      "sources": [
+        {
+          "caption": "THERE IS AN ANIMAL WITH ANIMAL PARTS SHOWING ",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000266030.jpg",
+          "image_id": 266030
+        },
+        {
+          "caption": "I cant tell what kind of animals these are",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000530941.jpg",
+          "image_id": 530941
+        },
+        {
+          "caption": "I am unable to see the image above.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000289967.jpg",
+          "image_id": 289967
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 22:14:13",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What vehicle is present?",
+    "answer": "The truck is driving down the road.",
+    "grounded": {
+      "answer": "The truck is driving down the road.",
+      "sources": [
+        {
+          "caption": "A car that is slightly driven off the road.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000091670.jpg",
+          "image_id": 91670
+        },
+        {
+          "caption": "This is the most weird looking vehicle that I have ever seen.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000161019.jpg",
+          "image_id": 161019
+        },
+        {
+          "caption": "There is a truck carrying items on it.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000488686.jpg",
+          "image_id": 488686
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 22:15:11",
+    "vqa": 0.0,
+    "faith": 0.6666666666666666
+  },
+  {
+    "question": "What is the man doing?",
+    "answer": "there is not an image here for me to see",
+    "grounded": {
+      "answer": "there is not an image here for me to see",
+      "sources": [
+        {
+          "caption": "there is not an image here for me to see",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000071016.jpg",
+          "image_id": 71016
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000153466.jpg",
+          "image_id": 153466
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000576468.jpg",
+          "image_id": 576468
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 22:16:12",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What animal is shown?",
+    "answer": "I cant tell what kind of animals these are",
+    "grounded": {
+      "answer": "I cant tell what kind of animals these are",
+      "sources": [
+        {
+          "caption": "THERE IS AN ANIMAL WITH ANIMAL PARTS SHOWING ",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000266030.jpg",
+          "image_id": 266030
+        },
+        {
+          "caption": "I cant tell what kind of animals these are",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000530941.jpg",
+          "image_id": 530941
+        },
+        {
+          "caption": "I am unable to see the image above.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000289967.jpg",
+          "image_id": 289967
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 22:17:08",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What vehicle is present?",
+    "answer": "The truck is driving down the road.",
+    "grounded": {
+      "answer": "The truck is driving down the road.",
+      "sources": [
+        {
+          "caption": "A car that is slightly driven off the road.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000091670.jpg",
+          "image_id": 91670
+        },
+        {
+          "caption": "This is the most weird looking vehicle that I have ever seen.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000161019.jpg",
+          "image_id": 161019
+        },
+        {
+          "caption": "There is a truck carrying items on it.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000488686.jpg",
+          "image_id": 488686
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 22:18:10",
+    "vqa": 0.0,
+    "faith": 0.6666666666666666
+  },
+  {
+    "question": "What is the man doing?",
+    "answer": "there is not an image here for me to see",
+    "grounded": {
+      "answer": "there is not an image here for me to see",
+      "sources": [
+        {
+          "caption": "there is not an image here for me to see",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000071016.jpg",
+          "image_id": 71016
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000153466.jpg",
+          "image_id": 153466
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000576468.jpg",
+          "image_id": 576468
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 22:19:00",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What animal is shown?",
+    "answer": "I cant tell what kind of animals these are",
+    "grounded": {
+      "answer": "I cant tell what kind of animals these are",
+      "sources": [
+        {
+          "caption": "THERE IS AN ANIMAL WITH ANIMAL PARTS SHOWING ",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000266030.jpg",
+          "image_id": 266030
+        },
+        {
+          "caption": "I cant tell what kind of animals these are",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000530941.jpg",
+          "image_id": 530941
+        },
+        {
+          "caption": "I am unable to see the image above.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000289967.jpg",
+          "image_id": 289967
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 22:19:44",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What vehicle is present?",
+    "answer": "The truck is driving down the road.",
+    "grounded": {
+      "answer": "The truck is driving down the road.",
+      "sources": [
+        {
+          "caption": "A car that is slightly driven off the road.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000091670.jpg",
+          "image_id": 91670
+        },
+        {
+          "caption": "This is the most weird looking vehicle that I have ever seen.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000161019.jpg",
+          "image_id": 161019
+        },
+        {
+          "caption": "There is a truck carrying items on it.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000488686.jpg",
+          "image_id": 488686
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 22:20:31",
+    "vqa": 0.0,
+    "faith": 0.6666666666666666
+  },
+  {
+    "question": "What is the man doing?",
+    "answer": "there is not an image here for me to see",
+    "grounded": {
+      "answer": "there is not an image here for me to see",
+      "sources": [
+        {
+          "caption": "there is not an image here for me to see",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000071016.jpg",
+          "image_id": 71016
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000153466.jpg",
+          "image_id": 153466
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000576468.jpg",
+          "image_id": 576468
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 22:22:06",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What is the woman holding?",
+    "answer": "the woman is holding her head down and has her hands on it",
+    "grounded": {
+      "answer": "the woman is holding her head down and has her hands on it",
+      "sources": [
+        {
+          "caption": "There is a woman holding an object in her hand.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000137377.jpg",
+          "image_id": 137377
+        },
+        {
+          "caption": "There is a woman holding an object in her hand.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000047667.jpg",
+          "image_id": 47667
+        },
+        {
+          "caption": "The woman is holding her head down and has her hands on it ",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000299544.jpg",
+          "image_id": 299544
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 22:23:00",
+    "vqa": 0.0,
+    "faith": 1.0
+  },
+  {
+    "question": "What vehicle is present?",
+    "answer": "The truck is driving down the road.",
+    "grounded": {
+      "answer": "The truck is driving down the road.",
+      "sources": [
+        {
+          "caption": "A car that is slightly driven off the road.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000091670.jpg",
+          "image_id": 91670
+        },
+        {
+          "caption": "This is the most weird looking vehicle that I have ever seen.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000161019.jpg",
+          "image_id": 161019
+        },
+        {
+          "caption": "There is a truck carrying items on it.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000488686.jpg",
+          "image_id": 488686
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 22:23:52",
+    "vqa": 0.0,
+    "faith": 0.6666666666666666
+  },
+  {
+    "question": "What animal do you see?",
+    "answer": "no image",
+    "grounded": {
+      "answer": "no image",
+      "sources": [
+        {
+          "caption": "An uncommon picture of a single animal inside this picture.\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000492671.jpg",
+          "image_id": 492671
+        },
+        {
+          "caption": "there is not an image here for me to see",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000071016.jpg",
+          "image_id": 71016
+        },
+        {
+          "caption": "I cannot see this first image..nothing is showing.",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000529155.jpg",
+          "image_id": 529155
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 22:24:33",
+    "vqa": 0.0,
+    "faith": 0.5
+  },
+  {
+    "question": "What is the man doing?",
+    "answer": "there is not an image here for me to see",
+    "grounded": {
+      "answer": "there is not an image here for me to see",
+      "sources": [
+        {
+          "caption": "there is not an image here for me to see",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000071016.jpg",
+          "image_id": 71016
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000153466.jpg",
+          "image_id": 153466
+        },
+        {
+          "caption": "Person doing an interesting activity in the picture\n",
+          "score": null,
+          "image_path": "data/coco\\train2017\\COCO_train2017_000000576468.jpg",
+          "image_id": 576468
+        }
+      ]
+    },
+    "timestamp": "2026-01-15 22:26:35",
+    "vqa": 0.0,
+    "faith": 1.0
+  }
+]
