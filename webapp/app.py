@@ -8,6 +8,7 @@ import uuid
 from pathlib import Path
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
@@ -31,7 +32,14 @@ app.add_middleware(
 )
 
 app.mount("/uploads", StaticFiles(directory=str(settings.upload_dir)), name="uploads")
-app.mount("/assets/coco/val2017", StaticFiles(directory=str(settings.val_images_dir)), name="coco-val")
+if settings.val_images_dir.exists():
+    app.mount("/assets/coco/val2017", StaticFiles(directory=str(settings.val_images_dir)), name="coco-val")
+
+frontend_dist = settings.project_root / "webapp" / "frontend" / "dist"
+frontend_assets = frontend_dist / "app-assets"
+frontend_index = frontend_dist / "index.html"
+if frontend_assets.exists():
+    app.mount("/app-assets", StaticFiles(directory=str(frontend_assets)), name="frontend-assets")
 
 
 def _get_service():
@@ -149,8 +157,19 @@ async def query(question: str = Form(""), file: UploadFile | None = File(default
 
 
 @app.get("/")
-async def root() -> dict[str, str]:
+async def root():
+    if frontend_index.exists():
+        return FileResponse(frontend_index)
     return {"message": "Hybrid multimodal RAG backend is running."}
+
+
+@app.get("/{full_path:path}")
+async def frontend_fallback(full_path: str):
+    if full_path.startswith(("api", "uploads", "assets", "app-assets")):
+        raise HTTPException(status_code=404, detail="Not found")
+    if frontend_index.exists():
+        return FileResponse(frontend_index)
+    raise HTTPException(status_code=404, detail="Not found")
 
 
 if __name__ == "__main__":

@@ -103,6 +103,32 @@ https://your-backend-host.example.com
 
 After that, the GitHub Pages frontend can call the backend and display real answers.
 
+## Single-Link Hosted Demo
+
+For your final review, do not use the `github.io` Pages URL as the main demo link. Use a single hosted web service URL instead so the frontend and backend are available from one place.
+
+This repository is already prepared for that:
+
+- `Dockerfile` builds the React frontend and packages the FastAPI backend
+- `webapp.app` serves both `/api/*` and the built frontend
+- `render.yaml` is included for direct Render deployment
+
+Recommended deployment flow:
+
+1. Open [Render](https://render.com/docs/github) and connect your GitHub account.
+2. Create a new Blueprint or Web Service from this repository.
+3. Let Render build the Docker image from this repo.
+4. Open the generated `https://...onrender.com` URL.
+
+That `onrender.com` URL is the direct link you should show to reviewers.
+
+If you want a one-click setup from the README, Render also supports a Deploy button for repos that contain a `render.yaml` blueprint. See the official docs: [Deploy to Render Button](https://render.com/docs/deploy-to-render).
+
+Hosted behavior note:
+
+- Uploaded-image reasoning works in the cloud deployment even without the local COCO corpus.
+- Full text-plus-corpus retrieval needs the dataset cache and indexes to be present in the deployed environment.
+
 ## Manual Run
 
 Backend:

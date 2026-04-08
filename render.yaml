@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: multimodal-rag-demo
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: "10000"
+      - key: MMRAG_LLM_PROVIDER
+        value: extractive
+      - key: MMRAG_USE_OPENAI
+        value: "0"
+      - key: MMRAG_TOP_K
+        value: "4"
+      - key: MMRAG_FUSION_K
+        value: "8"

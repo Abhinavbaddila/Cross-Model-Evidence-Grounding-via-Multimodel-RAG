@@ -6,6 +6,9 @@ const isGithubPagesBuild = process.env.GITHUB_ACTIONS === "true";
 
 export default defineConfig({
   base: isGithubPagesBuild ? repoBase : "/",
+  build: {
+    assetsDir: "app-assets",
+  },
   plugins: [
     react({
       babel: {

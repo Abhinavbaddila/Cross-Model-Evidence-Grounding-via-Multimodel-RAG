@@ -1,0 +1,17 @@
+.git
+.venv313
+rag_env
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+data
+indexes
+uploads
+presentation_assets
+runtime_logs
+yolov8n.pt
+
+webapp/frontend/node_modules
+webapp/frontend/dist

@@ -45,7 +45,12 @@ class MultimodalRAGService:
         self.vision = VisualReasoner(self.settings)
 
     def warmup(self) -> None:
-        self.indexer.prepare()
+        try:
+            self.indexer.prepare()
+        except Exception:
+            # Cloud/demo deployments may run without the local COCO corpus.
+            # In that case image-question answering can still work through the vision pipeline.
+            pass
 
     def status(self, *, startup_state: str = "ready", startup_error: str | None = None) -> StatusResponse:
         active_models = self.indexer.active_models | {
@@ -90,7 +95,25 @@ class MultimodalRAGService:
         return self._ask_text(normalized_question)
 
     def _ask_text(self, question: str) -> QueryResponse:
-        self.indexer.ensure_corpus_ready()
+        try:
+            self.indexer.ensure_corpus_ready()
+        except Exception:
+            return QueryResponse(
+                question=question,
+                query_kind="text",
+                answer="Text-only retrieval is not available in this deployment because the indexed corpus is not present. Upload an image and ask a question to use the live demo.",
+                answer_mode="fallback-no-corpus",
+                confidence=0.0,
+                confidence_breakdown=ConfidenceBreakdown(),
+                answer_explanation=[
+                    "The deployment is running without the local indexed corpus.",
+                    "Image-based reasoning is still available through the vision pipeline.",
+                ],
+                proof_summary="No indexed corpus was available for text-only retrieval.",
+                proofs=[],
+                retrieval_trace={},
+                corpus_name="Cloud Demo",
+            )
         proofs, trace = self._corpus_proofs(question=question, image_path=None, allow_clip=True)
         generation = self.generator.generate(question, proofs)
         confidence = self._compute_confidence(proofs, visual_grounding=0.0)
@@ -109,9 +132,12 @@ class MultimodalRAGService:
         )
 
     def _ask_image(self, question: str, image_path: str) -> QueryResponse:
-        self.indexer.ensure_corpus_ready()
         visual = self.vision.analyze(image_path, question)
-        similar_proofs, trace = self._corpus_proofs(question=question, image_path=image_path, allow_clip=True)
+        try:
+            self.indexer.ensure_corpus_ready()
+            similar_proofs, trace = self._corpus_proofs(question=question, image_path=image_path, allow_clip=True)
+        except Exception:
+            similar_proofs, trace = [], {}
         proofs = self._dedupe_proofs(visual.proofs + similar_proofs)[: max(self.settings.visual_proof_count + 2, self.settings.top_k)]
         answer = visual.answer
         answer_mode = visual.answer_mode
