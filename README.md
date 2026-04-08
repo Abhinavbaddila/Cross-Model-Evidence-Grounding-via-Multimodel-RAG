@@ -107,6 +107,8 @@ After that, the GitHub Pages frontend can call the backend and display real answ
 
 For your final review, do not use the `github.io` Pages URL as the main demo link. Use a single hosted web service URL instead so the frontend and backend are available from one place.
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+
 This repository is already prepared for that:
 
 - `Dockerfile` builds the React frontend and packages the FastAPI backend
