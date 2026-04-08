@@ -87,6 +87,22 @@ Open:
 http://127.0.0.1:5173
 ```
 
+## GitHub Pages
+
+This repository can publish the React frontend to GitHub Pages, but GitHub Pages is static hosting only. The FastAPI backend must be hosted separately for answers to work.
+
+To make the hosted GitHub Pages link return real answers:
+
+1. Host the backend on a public service such as Render, Railway, or Azure.
+2. In the GitHub repository settings, add a repository variable named `VITE_API_BASE_URL`.
+3. Set its value to your public backend URL, for example:
+
+```text
+https://your-backend-host.example.com
+```
+
+After that, the GitHub Pages frontend can call the backend and display real answers.
+
 ## Manual Run
 
 Backend:

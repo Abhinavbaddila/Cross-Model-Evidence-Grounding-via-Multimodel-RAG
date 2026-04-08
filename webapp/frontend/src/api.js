@@ -5,8 +5,12 @@ function candidateBases() {
     return [explicitBase.replace(/\/$/, "")];
   }
 
-  const bases = [""];
   const host = window.location.hostname;
+  if (host.endsWith("github.io")) {
+    return [];
+  }
+
+  const bases = [""];
   if (host === "127.0.0.1" || host === "localhost") {
     bases.push("http://127.0.0.1:9000");
     bases.push("http://localhost:9000");
@@ -40,6 +44,12 @@ async function request(path, options = {}) {
     } catch (error) {
       lastError = error;
     }
+  }
+
+  if (window.location.hostname.endsWith("github.io") && !explicitBase) {
+    throw new Error(
+      "This GitHub Pages site needs a public backend URL. Set VITE_API_BASE_URL during deployment so the frontend can reach the FastAPI API."
+    );
   }
 
   throw new Error(

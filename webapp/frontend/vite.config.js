@@ -1,7 +1,11 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
+const repoBase = "/Cross-Model-Evidence-Grounding-via-Multimodel-RAG/";
+const isGithubPagesBuild = process.env.GITHUB_ACTIONS === "true";
+
 export default defineConfig({
+  base: isGithubPagesBuild ? repoBase : "/",
   plugins: [
     react({
       babel: {
