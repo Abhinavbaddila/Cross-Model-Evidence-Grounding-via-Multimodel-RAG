@@ -294,7 +294,7 @@ export async function submitDemoQuery({ question, file }) {
           title: "Annotated uploaded image",
           image_url: annotated,
           annotated_image_url: annotated,
-          supporting_text,
+          supporting_text: supportingText,
           score: confidence,
           retrieval_channels: ["browser-object-detection", "uploaded-image"],
           matched_terms: matchedTerms(question || "", labels),
