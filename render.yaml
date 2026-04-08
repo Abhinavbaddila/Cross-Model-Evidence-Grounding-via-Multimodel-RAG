@@ -1,7 +1,9 @@
 services:
   - type: web
-    name: multimodal-rag-demo
+    name: cross-model-evidence-grounding-via
     runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
     plan: starter
     healthCheckPath: /api/health
     autoDeploy: true
