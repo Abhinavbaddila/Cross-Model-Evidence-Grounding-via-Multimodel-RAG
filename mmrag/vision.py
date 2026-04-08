@@ -5,9 +5,10 @@ import math
 import re
 import uuid
 from collections import Counter
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
+import cv2
 import torch
 from PIL import Image, ImageDraw
 
@@ -19,6 +20,11 @@ try:
     from ultralytics import YOLO
 except Exception:  # pragma: no cover - optional dependency
     YOLO = None
+
+try:
+    from rapidocr_onnxruntime import RapidOCR
+except Exception:  # pragma: no cover - optional dependency
+    RapidOCR = None
 
 
 COMMON_OBJECT_LABELS = [
@@ -92,8 +98,9 @@ COMMON_OBJECT_LABELS = [
     "chart",
     "document",
     "page",
+    "sign",
+    "poster",
 ]
-
 
 LABEL_ALIASES = {
     "people": "person",
@@ -109,8 +116,8 @@ LABEL_ALIASES = {
     "cellphone": "cell phone",
     "diningtable": "dining table",
     "pottedplant": "potted plant",
+    "text": "text",
 }
-
 
 ACTION_PATTERNS = [
     ("playing tennis", {"person", "tennis racket", "sports ball"}),
@@ -130,6 +137,34 @@ ACTION_PATTERNS = [
     ("sitting", {"person", "chair", "bench", "couch"}),
 ]
 
+TEXT_QUERY_HINTS = {
+    "text",
+    "written",
+    "read",
+    "write",
+    "says",
+    "word",
+    "words",
+    "number",
+    "numbers",
+    "price",
+    "amount",
+    "date",
+    "time",
+    "phone",
+    "email",
+    "address",
+    "room",
+    "invoice",
+    "bill",
+    "poster",
+    "sign",
+    "board",
+    "banner",
+    "label",
+    "notice",
+}
+
 
 def _slugify(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-") or "item"
@@ -138,16 +173,43 @@ def _slugify(value: str) -> str:
 def _pluralize(label: str, count: int) -> str:
     if count == 1:
         return label
+    if label == "person":
+        return "people"
     if label.endswith("y") and not label.endswith("ay"):
         return label[:-1] + "ies"
-    if label.endswith("s"):
-        return label
+    if label.endswith(("s", "x", "z", "ch", "sh")):
+        return label + "es"
     return label + "s"
 
 
 def _normalize_label(label: str) -> str:
     normalized = re.sub(r"\s+", " ", label.strip().lower())
     return LABEL_ALIASES.get(normalized, normalized)
+
+
+def _shorten_label(value: str, limit: int = 28) -> str:
+    compact = re.sub(r"\s+", " ", value.strip())
+    if len(compact) <= limit:
+        return compact
+    return compact[: limit - 3].rstrip() + "..."
+
+
+def _plural_forms(label: str) -> set[str]:
+    forms = {label}
+    if label == "person":
+        forms.update({"people", "persons"})
+    elif label.endswith("y") and not label.endswith("ay"):
+        forms.add(label[:-1] + "ies")
+    elif label.endswith(("s", "x", "z", "ch", "sh")):
+        forms.add(label + "es")
+    else:
+        forms.add(label + "s")
+    return forms
+
+
+def _question_mentions_label(question: str, label: str) -> bool:
+    normalized = question.lower()
+    return any(re.search(rf"\b{re.escape(form)}\b", normalized) for form in _plural_forms(label))
 
 
 def _data_url_for_image(image_path: str) -> str:
@@ -176,11 +238,19 @@ def _render_caption_from_detections(detections: list[BoundingBox]) -> str:
     counts = _counts_from_detections(detections)
     if not counts:
         return "An uploaded image."
-
     phrases = [f"{count} {_pluralize(label, count)}" for label, count in counts.most_common(5)]
     if len(phrases) == 1:
         return f"The image shows {phrases[0]}."
     return f"The image shows {', '.join(phrases[:-1])}, and {phrases[-1]}."
+
+
+def _looks_like_text_question(question: str) -> bool:
+    normalized = question.lower()
+    return any(hint in normalized for hint in TEXT_QUERY_HINTS)
+
+
+def _tokenize_text(value: str) -> list[str]:
+    return re.findall(r"[a-z0-9]+", value.lower())
 
 
 def guess_object_labels(question: str, caption: str, limit: int = 12) -> list[str]:
@@ -203,9 +273,12 @@ def draw_boxes(image_path: str, boxes: list[BoundingBox], output_path: Path) -> 
         for index, box in enumerate(boxes, start=1):
             outline = "#FF6B35" if index == 1 else "#0F766E"
             draw.rectangle((box.x1, box.y1, box.x2, box.y2), outline=outline, width=4)
-            label = f"{box.label} {box.score:.2f}"
-            anchor_y = max(0, box.y1 - 22)
-            draw.rectangle((box.x1, anchor_y, box.x1 + 180, anchor_y + 20), fill=outline)
+            label = _shorten_label(f"{box.label} {box.score:.2f}")
+            anchor_y = max(0, box.y1 - 24)
+            text_bbox = draw.textbbox((box.x1 + 6, anchor_y + 2), label)
+            label_width = max(80, int(text_bbox[2] - text_bbox[0]) + 12)
+            label_width = min(label_width, image.width - int(box.x1) - 4)
+            draw.rectangle((box.x1, anchor_y, box.x1 + label_width, anchor_y + 22), fill=outline)
             draw.text((box.x1 + 6, anchor_y + 2), label, fill="white")
         image.save(output_path)
 
@@ -216,8 +289,7 @@ def save_crop(image_path: str, box: BoundingBox, output_path: Path) -> None:
         y1 = max(0, int(math.floor(box.y1)))
         x2 = min(image.width, int(math.ceil(box.x2)))
         y2 = min(image.height, int(math.ceil(box.y2)))
-        crop = image.crop((x1, y1, x2, y2))
-        crop.save(output_path)
+        image.crop((x1, y1, x2, y2)).save(output_path)
 
 
 def best_count_target(question: str, detections: list[BoundingBox]) -> str | None:
@@ -225,13 +297,15 @@ def best_count_target(question: str, detections: list[BoundingBox]) -> str | Non
     if "how many" not in normalized:
         return None
     for label in COMMON_OBJECT_LABELS:
-        if label in normalized:
+        if _question_mentions_label(normalized, label):
             canonical = _normalize_label(label)
             if canonical in {"people", "man", "woman", "boy", "girl", "player"}:
                 return "person"
             return canonical
     if detections:
         return _normalize_label(detections[0].label)
+    if any(word in normalized for word in ["people", "person", "friends", "men", "women"]):
+        return "person"
     return None
 
 
@@ -262,7 +336,6 @@ def _infer_activity(detections: list[BoundingBox]) -> tuple[str | None, set[str]
     counts = _counts_from_detections(detections)
     if counts.get("person", 0) == 0:
         return None, set()
-
     for activity, labels in ACTION_PATTERNS:
         if any(counts.get(label, 0) > 0 for label in labels if label != "person"):
             return activity, labels
@@ -273,22 +346,14 @@ def _focus_labels_for_question(question: str, detections: list[BoundingBox]) -> 
     count_target = best_count_target(question, detections)
     if count_target is not None:
         return {count_target}
-
     if _looks_like_action_question(question):
         _, labels = _infer_activity(detections)
         return labels or {"person"}
-
-    labels = {
-        _normalize_label(label)
-        for label in COMMON_OBJECT_LABELS
-        if label in question.lower()
-    }
+    labels = {_normalize_label(label) for label in COMMON_OBJECT_LABELS if label in question.lower()}
     if labels:
         return labels
-
     if _looks_like_objects_question(question):
         return set(_top_labels(detections))
-
     return set(_top_labels(detections, limit=4))
 
 
@@ -307,13 +372,11 @@ def _box_question_score(box: BoundingBox, question: str, focus_labels: set[str])
 def _select_proof_boxes(question: str, detections: list[BoundingBox], limit: int) -> list[BoundingBox]:
     if not detections:
         return []
-
     focus_labels = _focus_labels_for_question(question, detections)
     count_target = best_count_target(question, detections)
     if count_target is not None:
         matches = [box for box in detections if _normalize_label(box.label) == count_target]
         return matches[:limit] or detections[:limit]
-
     if _looks_like_objects_question(question):
         selected: list[BoundingBox] = []
         seen_labels: set[str] = set()
@@ -326,7 +389,6 @@ def _select_proof_boxes(question: str, detections: list[BoundingBox], limit: int
             if len(selected) >= limit:
                 break
         return selected or detections[:limit]
-
     ranked = sorted(detections, key=lambda item: _box_question_score(item, question, focus_labels), reverse=True)
     return ranked[:limit]
 
@@ -337,11 +399,9 @@ def _answer_from_rules(question: str, caption: str, detections: list[BoundingBox
         count = sum(1 for box in detections if _normalize_label(box.label) == count_target)
         if count:
             return f"There are {count} {_pluralize(count_target, count)} visible in the image.", "rule-count"
-
     if _looks_like_objects_question(question) and detections:
         labels = _top_labels(detections)
         return f"The visible objects include {', '.join(labels)}.", "rule-objects"
-
     if _looks_like_action_question(question):
         activity, _ = _infer_activity(detections)
         if activity is not None:
@@ -351,7 +411,6 @@ def _answer_from_rules(question: str, caption: str, detections: list[BoundingBox
             return f"The person appears to be {activity}.", "rule-activity"
         if detections:
             return f"The image shows {caption.lower()}", "caption+detector"
-
     if question.lower().startswith(("is there", "are there", "does the image show")):
         labels = _focus_labels_for_question(question, detections)
         if labels:
@@ -360,7 +419,6 @@ def _answer_from_rules(question: str, caption: str, detections: list[BoundingBox
             if found:
                 return f"{prefix}, the image contains {', '.join(sorted(labels))}.", "rule-boolean"
             return f"{prefix}, the requested object is not clearly detected.", "rule-boolean"
-
     if detections:
         return caption, "detector-caption"
     return "I could not detect confident objects, but I can still use the uploaded image as context.", "fallback-caption"
@@ -370,7 +428,77 @@ def _prune_detections(detections: list[BoundingBox], threshold: float) -> list[B
     if not detections:
         return []
     dynamic_threshold = max(threshold, float(detections[0].score) * 0.45)
-    return [box for box in detections if box.score >= dynamic_threshold][:12]
+    return [box for box in detections if box.score >= dynamic_threshold][:16]
+
+
+def _question_terms(question: str) -> set[str]:
+    return set(_tokenize_text(question))
+
+
+def _ocr_line_score(question: str, text: str, score: float) -> float:
+    terms = _question_terms(question)
+    line_terms = set(_tokenize_text(text))
+    overlap = len(terms.intersection(line_terms))
+    numeric_boost = 0.0
+    if re.search(r"\d", text) and any(term in terms for term in {"number", "price", "amount", "date", "time", "phone", "room"}):
+        numeric_boost = 1.2
+    return overlap * 2.5 + numeric_boost + score
+
+
+def _extract_text_entity(question: str, text: str) -> str | None:
+    normalized = question.lower()
+    patterns: list[str] = []
+    if any(term in normalized for term in ["phone", "mobile", "contact"]):
+        patterns.append(r"(\+?\d[\d\s\-()]{7,}\d)")
+    if "email" in normalized:
+        patterns.append(r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}")
+    if any(term in normalized for term in ["price", "amount", "total", "bill"]):
+        patterns.append(r"(?:₹|\$|Rs\.?)\s?\d[\d,]*(?:\.\d+)?")
+    if "date" in normalized:
+        patterns.append(r"\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b|\b\d{1,2}\s+[A-Za-z]+\s+\d{2,4}\b")
+    if "time" in normalized:
+        patterns.append(r"\b\d{1,2}:\d{2}\s?(?:AM|PM|am|pm)?\b")
+    if "room" in normalized:
+        patterns.append(r"\b(?:room|hall|gate)\s*[:#-]?\s*[A-Za-z0-9-]+\b")
+    if "invoice" in normalized:
+        patterns.append(r"\b(?:invoice|bill)\s*(?:no|number)?\s*[:#-]?\s*[A-Za-z0-9-]+\b")
+    if "number" in normalized:
+        patterns.append(r"\b[A-Z0-9-]{3,}\b")
+    for pattern in patterns:
+        match = re.search(pattern, text, flags=re.IGNORECASE)
+        if match:
+            return match.group(0).strip()
+    return None
+
+
+@dataclass(slots=True)
+class OCRLine:
+    text: str
+    score: float
+    box: BoundingBox
+
+
+@dataclass(slots=True)
+class OCRResult:
+    full_text: str
+    lines: list[OCRLine]
+
+
+@dataclass(slots=True)
+class CountEvidence:
+    count: int
+    basis: str
+    boxes: list[BoundingBox]
+    explanation: str
+
+
+@dataclass(slots=True)
+class AnswerDecision:
+    answer: str
+    mode: str
+    explanation: str
+    proof_boxes: list[BoundingBox] = field(default_factory=list)
+    proof_lines: list[OCRLine] = field(default_factory=list)
 
 
 @dataclass(slots=True)
@@ -483,7 +611,7 @@ class YoloDetector:
             conf=threshold,
             imgsz=1280,
             verbose=False,
-            max_det=24,
+            max_det=32,
         )
         if not results:
             return []
@@ -587,6 +715,69 @@ class Owlv2Detector:
         return sorted(boxes, key=lambda item: item.score, reverse=True)
 
 
+class HaarFaceDetector:
+    def __init__(self) -> None:
+        cascade_path = Path(cv2.data.haarcascades) / "haarcascade_frontalface_default.xml"
+        self.classifier = cv2.CascadeClassifier(str(cascade_path))
+        if self.classifier.empty():
+            raise RuntimeError("OpenCV haar cascade for frontal face detection is unavailable")
+
+    def detect(self, image_path: str) -> list[BoundingBox]:
+        image = cv2.imread(str(image_path))
+        if image is None:
+            return []
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        min_size = max(24, min(gray.shape[:2]) // 14)
+        faces = self.classifier.detectMultiScale(
+            gray,
+            scaleFactor=1.05,
+            minNeighbors=4,
+            minSize=(min_size, min_size),
+        )
+        return [
+            BoundingBox(
+                label="face",
+                score=0.9,
+                x1=float(x),
+                y1=float(y),
+                x2=float(x + w),
+                y2=float(y + h),
+            )
+            for x, y, w, h in faces
+        ][:24]
+
+
+class RapidOCRBackend:
+    def __init__(self) -> None:
+        if RapidOCR is None:
+            raise RuntimeError("rapidocr_onnxruntime is not installed")
+        self.engine = RapidOCR()
+
+    def read(self, image_path: str) -> OCRResult:
+        result, _ = self.engine(image_path)
+        lines: list[OCRLine] = []
+        full_text_parts: list[str] = []
+        for item in result or []:
+            points, text, score = item
+            text = re.sub(r"\s+", " ", str(text)).strip()
+            if not text:
+                continue
+            xs = [float(point[0]) for point in points]
+            ys = [float(point[1]) for point in points]
+            box = BoundingBox(
+                label=_shorten_label(text),
+                score=float(score),
+                x1=min(xs),
+                y1=min(ys),
+                x2=max(xs),
+                y2=max(ys),
+            )
+            lines.append(OCRLine(text=text, score=float(score), box=box))
+            full_text_parts.append(text)
+        lines.sort(key=lambda line: (line.box.y1, line.box.x1))
+        return OCRResult(full_text=" ".join(full_text_parts).strip(), lines=lines)
+
+
 class VisualReasoner:
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
@@ -598,6 +789,10 @@ class VisualReasoner:
         self._blip_failed = False
         self._detector = None
         self._detector_failed = False
+        self._face_detector: HaarFaceDetector | None = None
+        self._face_detector_failed = False
+        self._ocr_backend: RapidOCRBackend | None = None
+        self._ocr_failed = False
 
     def _get_openai_backend(self) -> OpenAIVisionBackend | None:
         if not self.settings.openai_api_key or self._openai_failed:
@@ -652,6 +847,99 @@ class VisualReasoner:
                     self._detector = None
         return self._detector
 
+    def _get_face_detector(self) -> HaarFaceDetector | None:
+        if self._face_detector_failed:
+            return None
+        if self._face_detector is None:
+            try:
+                self._face_detector = HaarFaceDetector()
+            except Exception:
+                self._face_detector_failed = True
+                self._face_detector = None
+        return self._face_detector
+
+    def _get_ocr_backend(self) -> RapidOCRBackend | None:
+        if self._ocr_failed:
+            return None
+        if self._ocr_backend is None:
+            try:
+                self._ocr_backend = RapidOCRBackend()
+            except Exception:
+                self._ocr_failed = True
+                self._ocr_backend = None
+        return self._ocr_backend
+
+    def _should_try_ocr(self, question: str, detections: list[BoundingBox]) -> bool:
+        if _looks_like_text_question(question):
+            return True
+        if not detections:
+            return True
+        labels = {_normalize_label(box.label) for box in detections[:6]}
+        return bool(labels.intersection({"book", "document", "page", "chart", "sign", "poster", "tv"}))
+
+    def _person_count_evidence(self, detections: list[BoundingBox], face_boxes: list[BoundingBox]) -> CountEvidence:
+        person_boxes = [box for box in detections if _normalize_label(box.label) == "person"]
+        face_count = len(face_boxes)
+        person_count = len(person_boxes)
+        if face_count >= person_count + 2 and face_count > 0:
+            return CountEvidence(
+                count=face_count,
+                basis="face-count",
+                boxes=face_boxes,
+                explanation=f"Face detection found {face_count} visible people while object detection found {person_count}.",
+            )
+        if person_count > 0:
+            return CountEvidence(
+                count=person_count,
+                basis="person-detection",
+                boxes=person_boxes,
+                explanation=f"Object detection found {person_count} people and face detection found {face_count}.",
+            )
+        return CountEvidence(
+            count=face_count,
+            basis="face-count",
+            boxes=face_boxes,
+            explanation=f"Face detection found {face_count} visible people.",
+        )
+
+    def _answer_from_ocr(self, question: str, ocr_result: OCRResult | None) -> AnswerDecision | None:
+        if ocr_result is None or not ocr_result.full_text:
+            return None
+
+        entity = _extract_text_entity(question, ocr_result.full_text)
+        if entity:
+            matching_lines = [line for line in ocr_result.lines if entity.lower() in line.text.lower()]
+            return AnswerDecision(
+                answer=f"The extracted text indicates: {entity}.",
+                mode="ocr-entity",
+                explanation="OCR extracted a direct entity match for the question.",
+                proof_lines=matching_lines or ocr_result.lines[:2],
+            )
+
+        if any(phrase in question.lower() for phrase in ["what is written", "what does", "read the text", "what text"]):
+            return AnswerDecision(
+                answer=f"The visible text reads: {ocr_result.full_text}.",
+                mode="ocr-read",
+                explanation="OCR extracted the visible text directly from the uploaded image.",
+                proof_lines=ocr_result.lines[: min(4, len(ocr_result.lines))],
+            )
+
+        scored_lines = sorted(
+            ocr_result.lines,
+            key=lambda line: _ocr_line_score(question, line.text, line.score),
+            reverse=True,
+        )
+        if scored_lines and _ocr_line_score(question, scored_lines[0].text, scored_lines[0].score) > 0.9:
+            lead = scored_lines[0]
+            return AnswerDecision(
+                answer=f"The most relevant extracted text is: {lead.text}.",
+                mode="ocr-best-line",
+                explanation="OCR found a line with strong overlap to the question.",
+                proof_lines=scored_lines[: min(3, len(scored_lines))],
+            )
+
+        return None
+
     def _answer_with_optional_vlm(
         self,
         image_path: str,
@@ -702,10 +990,18 @@ class VisualReasoner:
 
         return None, None
 
-    def _caption_image(self, image_path: str, detections: list[BoundingBox]) -> tuple[str, str]:
+    def _caption_image(
+        self,
+        image_path: str,
+        detections: list[BoundingBox],
+        ocr_result: OCRResult | None = None,
+    ) -> tuple[str, str]:
         rendered = _render_caption_from_detections(detections)
         if detections:
             return rendered, "detector-caption"
+        if ocr_result is not None and ocr_result.full_text:
+            preview = _shorten_label(ocr_result.full_text, limit=72)
+            return f"The image contains readable text: {preview}.", "ocr-caption"
 
         provider = self.settings.vlm_provider
         if provider == "openai" and self.settings.openai_api_key:
@@ -743,43 +1039,80 @@ class VisualReasoner:
         question: str,
         caption: str,
         detections: list[BoundingBox],
-    ) -> tuple[str, str]:
+        face_boxes: list[BoundingBox],
+        ocr_result: OCRResult | None,
+    ) -> AnswerDecision:
         normalized = question.strip()
         if not normalized:
-            return caption, "caption"
+            return AnswerDecision(
+                answer=caption,
+                mode="caption",
+                explanation="The answer falls back to the grounded image caption.",
+                proof_boxes=_select_proof_boxes(question, detections, self.settings.visual_proof_count),
+            )
+
+        if _looks_like_text_question(normalized):
+            ocr_answer = self._answer_from_ocr(normalized, ocr_result)
+            if ocr_answer is not None:
+                return ocr_answer
+
+        count_target = best_count_target(normalized, detections)
+        if count_target == "person":
+            evidence = self._person_count_evidence(detections, face_boxes)
+            if evidence.count:
+                return AnswerDecision(
+                    answer=f"There are {evidence.count} people visible in the image.",
+                    mode=evidence.basis,
+                    explanation=evidence.explanation,
+                    proof_boxes=evidence.boxes[: self.settings.visual_proof_count + 4],
+                )
 
         rule_answer, rule_mode = _answer_from_rules(normalized, caption, detections)
         optional_answer, optional_mode = self._answer_with_optional_vlm(image_path, normalized, caption, detections)
         if optional_answer:
-            return optional_answer, optional_mode or rule_mode
-        return rule_answer, rule_mode
+            return AnswerDecision(
+                answer=optional_answer,
+                mode=optional_mode or rule_mode,
+                explanation="A vision-language model refined the grounded answer using the uploaded image.",
+                proof_boxes=_select_proof_boxes(question, detections, self.settings.visual_proof_count),
+            )
+        return AnswerDecision(
+            answer=rule_answer,
+            mode=rule_mode,
+            explanation="Rule-based grounded reasoning selected the answer from detected evidence.",
+            proof_boxes=_select_proof_boxes(question, detections, self.settings.visual_proof_count),
+        )
 
-    def _build_visual_proofs(
+    def _build_detection_proofs(
         self,
         image_path: str,
         question: str,
         caption: str,
         detections: list[BoundingBox],
+        proof_boxes: list[BoundingBox] | None = None,
+        *,
+        proof_title: str = "Highlighted uploaded image",
+        lead_channel: str = "detector",
+        lead_supporting_text: str | None = None,
     ) -> tuple[str, list[ProofItem]]:
-        selected_boxes = _select_proof_boxes(question, detections, self.settings.visual_proof_count)
+        selected_boxes = proof_boxes or _select_proof_boxes(question, detections, self.settings.visual_proof_count)
         file_stem = _slugify(Path(image_path).stem) + "-" + uuid.uuid4().hex[:8]
         annotated_path = self.settings.generated_dir / f"{file_stem}-annotated.jpg"
         draw_boxes(image_path, selected_boxes, annotated_path)
         annotated_url = f"/uploads/generated/{annotated_path.name}"
-
         lead_score = max((box.score for box in selected_boxes[:1]), default=0.38)
         proofs: list[ProofItem] = [
             ProofItem(
                 id="P0",
-                title="Highlighted uploaded image",
+                title=proof_title,
                 source_kind="highlighted-image",
                 source_id=Path(image_path).name,
                 image_url=annotated_url,
                 annotated_image_url=annotated_url,
                 caption=caption,
-                supporting_text=caption,
+                supporting_text=lead_supporting_text or caption,
                 score=round(float(lead_score), 4),
-                retrieval_channels=["detector", "visual-grounding"],
+                retrieval_channels=[lead_channel, "visual-grounding"],
                 explanation=[
                     "This proof shows the uploaded image with the most relevant grounded regions highlighted.",
                     f"The highlighted regions were selected for the question: {question or 'Describe the image.'}",
@@ -787,18 +1120,17 @@ class VisualReasoner:
                 boxes=selected_boxes,
             )
         ]
-
         if not selected_boxes:
             return annotated_url, proofs
 
-        for index, box in enumerate(selected_boxes, start=1):
+        for index, box in enumerate(selected_boxes[: self.settings.visual_proof_count], start=1):
             crop_path = self.settings.generated_dir / f"{file_stem}-proof-{index}.jpg"
             save_crop(image_path, box, crop_path)
             crop_url = f"/uploads/generated/{crop_path.name}"
             proofs.append(
                 ProofItem(
                     id=f"P{index}",
-                    title=f"Detected {box.label}",
+                    title=f"Detected {_shorten_label(box.label, 24)}",
                     source_kind="detected-region",
                     source_id=f"{Path(image_path).name}:{index}",
                     image_url=crop_url,
@@ -806,9 +1138,9 @@ class VisualReasoner:
                     caption=f"Detected region for {box.label}",
                     supporting_text=f"{box.label} detected with confidence {box.score:.2f}.",
                     score=round(float(box.score), 4),
-                    retrieval_channels=["detector"],
+                    retrieval_channels=[lead_channel],
                     explanation=[
-                        f"Grounded detection localized `{box.label}` as a proof region relevant to the question.",
+                        f"Grounded evidence localized `{box.label}` as a region relevant to the question.",
                         f"Bounding box confidence: {box.score:.2f}.",
                     ],
                     boxes=[box],
@@ -816,6 +1148,44 @@ class VisualReasoner:
             )
 
         return annotated_url, proofs[: self.settings.visual_proof_count + 1]
+
+    def _build_ocr_proofs(
+        self,
+        image_path: str,
+        question: str,
+        caption: str,
+        lines: list[OCRLine],
+    ) -> tuple[str, list[ProofItem]]:
+        ocr_boxes = [
+            BoundingBox(
+                label=_shorten_label(line.text, 30),
+                score=line.score,
+                x1=line.box.x1,
+                y1=line.box.y1,
+                x2=line.box.x2,
+                y2=line.box.y2,
+            )
+            for line in lines
+        ]
+        annotated_url, proofs = self._build_detection_proofs(
+            image_path,
+            question,
+            caption,
+            ocr_boxes,
+            proof_boxes=ocr_boxes[: self.settings.visual_proof_count],
+            proof_title="OCR highlighted text",
+            lead_channel="ocr",
+            lead_supporting_text=" ".join(line.text for line in lines[:3]),
+        )
+        for proof, line in zip(proofs[1:], lines[: self.settings.visual_proof_count]):
+            proof.title = "OCR text region"
+            proof.caption = f"Extracted text: {line.text}"
+            proof.supporting_text = line.text
+            proof.explanation = [
+                "OCR extracted this text region from the uploaded image.",
+                f"Recognition confidence: {line.score:.2f}.",
+            ]
+        return annotated_url, proofs
 
     def analyze(self, image_path: str, question: str) -> VisionAnalysisResult:
         detector = self._get_detector()
@@ -828,32 +1198,84 @@ class VisualReasoner:
                 detections = []
         detections = _prune_detections(detections, self.settings.detection_threshold)
 
-        caption, caption_mode = self._caption_image(image_path, detections)
-        answer, answer_mode = self._answer_image_question(image_path, question, caption, detections)
-        highlighted_url, proofs = self._build_visual_proofs(image_path, question, caption, detections)
+        face_boxes: list[BoundingBox] = []
+        face_detector = self._get_face_detector()
+        if face_detector is not None:
+            try:
+                face_boxes = face_detector.detect(image_path)
+            except Exception:
+                face_boxes = []
 
-        selected_boxes = [box for proof in proofs[1:] for box in proof.boxes]
-        avg_detector_score = sum(box.score for box in selected_boxes[:4]) / max(1, len(selected_boxes[:4]))
+        ocr_result: OCRResult | None = None
+        if self._should_try_ocr(question, detections):
+            ocr_backend = self._get_ocr_backend()
+            if ocr_backend is not None:
+                try:
+                    ocr_result = ocr_backend.read(image_path)
+                except Exception:
+                    ocr_result = None
+
+        caption, caption_mode = self._caption_image(image_path, detections, ocr_result=ocr_result)
+        decision = self._answer_image_question(image_path, question, caption, detections, face_boxes, ocr_result)
+
+        if decision.proof_lines:
+            highlighted_url, proofs = self._build_ocr_proofs(image_path, question, caption, decision.proof_lines)
+        elif decision.mode == "face-count" and decision.proof_boxes:
+            highlighted_url, proofs = self._build_detection_proofs(
+                image_path,
+                question,
+                caption,
+                decision.proof_boxes,
+                proof_boxes=decision.proof_boxes,
+                proof_title="Counted faces in uploaded image",
+                lead_channel="face-detector",
+                lead_supporting_text=decision.explanation,
+            )
+        else:
+            highlighted_url, proofs = self._build_detection_proofs(
+                image_path,
+                question,
+                caption,
+                detections,
+                proof_boxes=decision.proof_boxes,
+                proof_title="Highlighted uploaded image",
+                lead_channel="detector",
+                lead_supporting_text=decision.explanation,
+            )
+
+        selected_boxes = [box for proof in proofs for box in proof.boxes]
+        avg_selected_score = sum(box.score for box in selected_boxes[:6]) / max(1, len(selected_boxes[:6]))
+        ocr_signal = 0.0
+        if ocr_result is not None and ocr_result.lines:
+            ocr_signal = sum(line.score for line in ocr_result.lines[:4]) / max(1, len(ocr_result.lines[:4]))
         visual_grounding_score = min(
             0.999,
-            (0.58 * avg_detector_score) + (0.22 if selected_boxes else 0.0) + (0.2 if answer else 0.0),
+            (0.5 * avg_selected_score)
+            + (0.18 if selected_boxes else 0.0)
+            + (0.16 if ocr_signal else 0.0)
+            + (0.16 if decision.answer else 0.0),
         )
         explanation = [
             f"Caption source: {caption_mode}.",
-            f"Question answering source: {answer_mode}.",
+            f"Question answering source: {decision.mode}.",
+            decision.explanation,
         ]
         if selected_boxes:
             explanation.append(
-                "Relevant grounded objects: "
+                "Relevant grounded regions: "
                 + ", ".join(f"{box.label} ({box.score:.2f})" for box in selected_boxes[:4])
                 + "."
             )
-        else:
-            explanation.append("No confident object detections were found, so the answer relies on global image reasoning.")
+        if ocr_result is not None and ocr_result.full_text:
+            explanation.append(f"OCR extracted text: {_shorten_label(ocr_result.full_text, 96)}.")
+        if face_boxes:
+            explanation.append(f"Face detector found {len(face_boxes)} visible faces.")
+        if not selected_boxes and not ocr_result:
+            explanation.append("No confident detections were found, so the answer relies on fallback image reasoning.")
 
         return VisionAnalysisResult(
-            answer=answer,
-            answer_mode=answer_mode,
+            answer=decision.answer,
+            answer_mode=decision.mode,
             caption=caption,
             highlighted_image_url=highlighted_url,
             proofs=proofs,

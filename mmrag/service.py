@@ -73,6 +73,8 @@ class MultimodalRAGService:
             capabilities=[
                 "zero-shot image reasoning",
                 "visual grounding",
+                "ocr text extraction",
+                "face-assisted people counting",
                 "similar image retrieval",
                 "pdf ingestion",
                 "table ingestion",
@@ -144,9 +146,40 @@ class MultimodalRAGService:
         retrieval_override_note = None
         lower_question = question.lower()
         generic_image_query = self._is_generic_image_query(question)
+        text_image_query = any(
+            phrase in lower_question
+            for phrase in [
+                "text",
+                "written",
+                "read",
+                "write",
+                "says",
+                "word",
+                "words",
+                "number",
+                "price",
+                "amount",
+                "date",
+                "time",
+                "phone",
+                "email",
+                "address",
+                "room",
+                "invoice",
+                "bill",
+                "poster",
+                "sign",
+                "board",
+                "banner",
+                "label",
+            ]
+        )
         prefers_direct_visual_answer = any(
             [
                 generic_image_query,
+                text_image_query,
+                visual.answer_mode.startswith("ocr"),
+                visual.answer_mode in {"face-count", "person-detection"},
                 "describe" in lower_question,
                 "how many" in lower_question,
                 "what objects" in lower_question,
@@ -157,9 +190,7 @@ class MultimodalRAGService:
         )
         if similar_proofs:
             lead_similar = similar_proofs[0]
-            has_strong_image_match = bool(
-                {"exact_image_match", "near_image_match", "clip_image"}.intersection(lead_similar.retrieval_channels)
-            )
+            has_strong_image_match = bool({"exact_image_match", "near_image_match"}.intersection(lead_similar.retrieval_channels))
             if has_strong_image_match and lead_similar.score >= 0.86 and not prefers_direct_visual_answer:
                 grounded = self.generator.generate(question, similar_proofs[:2])
                 answer = grounded.answer
@@ -386,6 +417,10 @@ class MultimodalRAGService:
 
     def _proof_summary(self, proofs: list[ProofItem], visual: VisionAnalysisResult | None = None) -> str:
         if visual is not None:
+            if visual.answer_mode.startswith("ocr"):
+                return "Primary proof comes from OCR text regions extracted from the uploaded image."
+            if visual.answer_mode == "face-count":
+                return "Primary proof comes from counted face regions in the uploaded image."
             labels = ", ".join(box.label for box in visual.detected_boxes[:4]) or "no strong detections"
             return f"Primary proof comes from grounded visual regions in the uploaded image. Key highlighted objects: {labels}."
         if not proofs:
